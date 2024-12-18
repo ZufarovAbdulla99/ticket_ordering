@@ -24,6 +24,7 @@ const FlightBooking = () => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { currentBooking } = useSelector((state) => state.flights);
+  const { orders } = useSelector((state) => state.flights);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,17 +46,36 @@ const FlightBooking = () => {
             }
         })
     }
+
+    try {
+      const order = {
+          ...currentBooking,
+          userId: user.id,
+      }
+      console.log(order)
+      const newOrder = await createFlightOrder(order);
+      // dispatch(addOrder(newOrder.data))
+      toast.success("Flight booked successfully")
+      navigate("/orders")
+      // const data = await fetch("http://localhost:8080/flights", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json"},
+      //   body: JSON.stringify(order)
+      // })
+      // console.log(data)
+
+
+      // dispatch(addOrder(order))
+      // console.log(orders)
+      // console.log(createFlightOrder(order))
+      // console.log(order.flyDate)
+    } catch (error) {
+      console.error(error)
+      toast.error("Failed to book the flight. Please try again")
+    }
   };
 
-  try {
-    const order = {
-        ...currentBooking,
-        userId: user.id,
-    }
-    
-  } catch (error) {
-    
-  }
+  
 
   return (
     <Container maxWidth="sm">
